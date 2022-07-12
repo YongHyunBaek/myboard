@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 첫번째 예제 실습후에 주석처리함  
+	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV"
+								init-method="start" destroy-method="stop"/>
+	-->
+	
+	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="singleton"/>  싱글톤 결과 확인 후 주석처리-->
+	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="prototype"/>
+	
+	<!--
+	<bean id="lgtv" class="tommy.spring.polymorphism.LgTV" lazy-init="true"/> 
+	 승재형 실습 후 삭제 나중가서 나오니까 그냥 알고만 있어라.  -->
+</beans>

@@ -1,17 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
 	<!-- 첫번째 예제 실습후에 주석처리함  
 	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV"
 								init-method="start" destroy-method="stop"/>
 	-->
 	
-	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="singleton"/>  싱글톤 결과 확인 후 주석처리-->
-	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="prototype"/>
+	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="singleton"/> -->  
+	<!--<bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="prototype"/> -->  
 	
-	<!--
+	<!--  
 	<bean id="lgtv" class="tommy.spring.polymorphism.LgTV" lazy-init="true"/> 
-	 승재형 실습 후 삭제 나중가서 나오니까 그냥 알고만 있어라.  -->
+	 승재형 실습 후 삭제 나중가서 나오니까 그냥 알고만 있어라.-->
+	 
+	<!--  <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"/> 1번예제(의존성 주입,생성자 인젝션 방법) 실행후 주석  -->
+	
+	<!--  
+	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
+			<constructor-arg ref="sony"></constructor-arg>
+	</bean>
+	 <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 2번예제(의존성 주입 setter 인젝션 방법) 실행 후 주석 -->
+	 
+	 <!-- 아래 예제에서 생정자가 여러개 오버로딩 되어 있다면
+	 		<constructor-arg index=0 ref="sony"></constructor-arg>
+			<constructor-arg index="1" value="3000000"></constructor-arg>
+	인덱스를 줘서 순서를 정할 수 있으나 코드를 짤때 애초에 순서를 지켜서 작성해라.-->
+	  
+	 <!--   
+	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
+			<constructor-arg ref="sony"></constructor-arg>
+			<constructor-arg value="3000000"></constructor-arg>
+	</bean>
+	<bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 
+	 다중 변수 매핑 정상구현 후 주석 -->
+	 
+	 <!--  
+	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
+			<constructor-arg ref="apple"></constructor-arg>
+			<constructor-arg value="3000000"></constructor-arg>
+	 </bean>
+	 <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 
+	 <bean id="apple" class="tommy.spring.polymorphism.AppleSpeaker"/> 
+	 Speaker 인터페이스 상속 정상 구현 후 주석 -->
+	 
+	<!-- setter 인젝션 정상 구현후 주석 	
+	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
+		<property name="speaker" ref="apple" />
+		<property name="price" value="3000000" />
+	</bean>
+	 <bean id="apple" class="tommy.spring.polymorphism.AppleSpeaker"/>
+	 51번째 줄을 놓쳐서 오류 발생함 -->
+	 
+	 <!-- p네임스페이스 정상 구현 후 주석
+	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"
+	 								p:speaker-ref="sony" p:price="2800000"/>
+	 <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> -->
+	  
+	  <!-- List타입 정상 구현 후 주석 
+	  <bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
+			<property name="addressList">
+						<list>
+								<value>서울시 서초구 서초동</value>
+								<value>서울시 동대문구 장안동</value>
+						</list>
+			</property>
+	  </bean>
+	  -->
+	  <!-- map 정상 구현후 주석 
+	  <bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
+		<property name="addressList">
+			<map>
+				<entry>
+							<key><value>홍길동</value></key>
+							<value>율도국</value>
+					</entry>
+					<entry>
+							<key><value>손오공</value></key>
+							<value>화과산</value>
+				</entry>
+			</map>
+		</property>
+		</bean>
+		===========================================> -->
+		 <!-- property 정상 구현후 주석 
+		<bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
+			<property name="addressList">
+					<props>
+							<prop key="홍길동">율도국</prop>
+							<prop key="손오공">화과산</prop>
+					</props>
+			</property>
+		</bean>
+		===========================================> -->
+		
+		<!-- Set 정상구현 후 주석처리 
+		<bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
+			<property name="addressList">
+					<set value-type="java.lang.String">
+							<value>서울시 서초구 서초동</value>
+							<value>서울시 동대문구 장안동</value>
+							<value>서울시 동대문구 장안동</value>
+							<value>서울시 동대문구 장안동</value>
+					</set>
+			</property>
+		</bean>  -->
+	  	<!-- 분명 여러개를 저장했는데도 결과는 1개가 나옴 
+	  		Set 컬렉션은 같은데이터를 중복해서 저장하지 않음.
+	  	 -->
+	  	 <!-- lifecycle 실습을위해 주석처리 
+	  	 <context:component-scan base-package="tommy.spring.polymorphism"></context:component-scan>
+	  	 <bean id="sonny" class="tommy.spring.polymorphism.SonySpeaker" />  -->
+	  	 
+	  	 <!--  BeanFactory의 라이프 사이클
+	  	 <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" init-method="init">
+		 <property name="greeting"><value>Hello, </value></property></bean>  -->
+		 
+		 <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" init-method="init">
+		 <property name="greeting"><value>Hello, </value></property>
+		 </bean>
+		 <bean class="tommy.spring.lifecycle.CustomBeanPostProcessor" />
+		 
+		 
 </beans>

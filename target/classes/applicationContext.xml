@@ -3,8 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
 
 	<!-- 첫번째 예제 실습후에 주석처리함  
 	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV"
@@ -112,18 +114,31 @@
 	  	<!-- 분명 여러개를 저장했는데도 결과는 1개가 나옴 
 	  		Set 컬렉션은 같은데이터를 중복해서 저장하지 않음.
 	  	 -->
-	  	 <!-- lifecycle 실습을위해 주석처리 
-	  	 <context:component-scan base-package="tommy.spring.polymorphism"></context:component-scan>
-	  	 <bean id="sonny" class="tommy.spring.polymorphism.SonySpeaker" />  -->
+	  	 <!--   lifecycle 실습을위해 주석처리 
+	  	 <context:component-scan base-package="tommy.spring.polymorphism"></context:component-scan>-->
+	  	
+	  	<!-- Apple을 원할시 apple주석 해제, Sony를 원할시Sony 주석 해제 -->	 
+	  	 <!-- <bean class="tommy.spring.polymorphism.AppleSpeaker" />  --> 
+	  	 <!-- <bean id="sonny" class="tommy.spring.polymorphism.SonySpeaker" />   -->
 	  	 
 	  	 <!--  BeanFactory의 라이프 사이클
 	  	 <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" init-method="init">
 		 <property name="greeting"><value>Hello, </value></property></bean>  -->
 		 
+		 <!-- 
 		 <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" init-method="init">
 		 <property name="greeting"><value>Hello, </value></property>
 		 </bean>
 		 <bean class="tommy.spring.lifecycle.CustomBeanPostProcessor" />
+		  -->
+		 <context:component-scan base-package="tommy.spring.web"></context:component-scan>
 		 
-		 
+		 <!-- 어노테이션 없이 실행됐으면 주석처리 
+		 <bean id="userService" class="tommy.spring.web.user.impl.UserServiceImpl">
+		 		<property name="userDAO" ref="userDAO" />
+		 </bean>
+		 <bean id="userDAO" class="tommy.spring.web.user.impl.UserDAO"></bean>-->
+	     
+	     
 </beans>
+

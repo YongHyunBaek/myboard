@@ -4,253 +4,201 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" 
+		/> <property name="url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1" /> 
+		<property name="username" value="mytest" /> <property name="password" value="mytest" 
+		/> </bean> -->
 
-	<!-- 첫번째 예제 실습후에 주석처리함  
-	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV"
-								init-method="start" destroy-method="stop"/>
-	-->
-	
-	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="singleton"/> -->  
-	<!--<bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="prototype"/> -->  
-	
-	<!--  
-	<bean id="lgtv" class="tommy.spring.polymorphism.LgTV" lazy-init="true"/> 
-	 승재형 실습 후 삭제 나중가서 나오니까 그냥 알고만 있어라.-->
-	 
-	<!--  <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"/> 1번예제(의존성 주입,생성자 인젝션 방법) 실행후 주석  -->
-	
-	<!--  
-	<bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
-			<constructor-arg ref="sony"></constructor-arg>
+	<context:component-scan
+		base-package="tommy.spring.web"></context:component-scan>
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+	<context:property-placeholder
+		location="classpath:config/database.properties" />
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="${jdbc.driver}" 
+		/> <property name="url" value="${jdbc.url}" /> <property name="username" 
+		value="${jdbc.username}" /> <property name="password" value="${jdbc.password}" 
+		/> </bean> -->
+
+	<!-- 스프링 JDBC 설정 -->
+	<bean id="jdbcTemplate"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
 	</bean>
-	 <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 2번예제(의존성 주입 setter 인젝션 방법) 실행 후 주석 -->
-	 
-	 <!-- 아래 예제에서 생정자가 여러개 오버로딩 되어 있다면
-	 		<constructor-arg index=0 ref="sony"></constructor-arg>
-			<constructor-arg index="1" value="3000000"></constructor-arg>
-	인덱스를 줘서 순서를 정할 수 있으나 코드를 짤때 애초에 순서를 지켜서 작성해라.-->
-	  
-	 <!--   
-	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
-			<constructor-arg ref="sony"></constructor-arg>
-			<constructor-arg value="3000000"></constructor-arg>
+	
+	<!-- 트랜잭션 관리자 등록 -->
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
 	</bean>
-	<bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 
-	 다중 변수 매핑 정상구현 후 주석 -->
-	 
-	 <!--  
-	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
-			<constructor-arg ref="apple"></constructor-arg>
-			<constructor-arg value="3000000"></constructor-arg>
-	 </bean>
-	 <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 
-	 <bean id="apple" class="tommy.spring.polymorphism.AppleSpeaker"/> 
-	 Speaker 인터페이스 상속 정상 구현 후 주석 -->
-	 
-	<!-- setter 인젝션 정상 구현후 주석 	
-	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV">
-		<property name="speaker" ref="apple" />
-		<property name="price" value="3000000" />
+	<!-- <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+		<property name="dataSource" ref="dataSource"></property> </bean> -->
+
+	<!-- 트랜잭션 어드바이스 등록 -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
 	</bean>
-	 <bean id="apple" class="tommy.spring.polymorphism.AppleSpeaker"/>
-	 51번째 줄을 놓쳐서 오류 발생함 -->
-	 
-	 <!-- p네임스페이스 정상 구현 후 주석
-	 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"
-	 								p:speaker-ref="sony" p:price="2800000"/>
-	 <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> -->
-	  
-	  <!-- List타입 정상 구현 후 주석 
-	  <bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
-			<property name="addressList">
-						<list>
-								<value>서울시 서초구 서초동</value>
-								<value>서울시 동대문구 장안동</value>
-						</list>
-			</property>
-	  </bean>
-	  -->
-	  <!-- map 정상 구현후 주석 
-	  <bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
-		<property name="addressList">
-			<map>
-				<entry>
-							<key><value>홍길동</value></key>
-							<value>율도국</value>
-					</entry>
-					<entry>
-							<key><value>손오공</value></key>
-							<value>화과산</value>
-				</entry>
-			</map>
-		</property>
-		</bean>
-		===========================================> -->
-		 <!-- property 정상 구현후 주석 
-		<bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
-			<property name="addressList">
-					<props>
-							<prop key="홍길동">율도국</prop>
-							<prop key="손오공">화과산</prop>
-					</props>
-			</property>
-		</bean>
-		===========================================> -->
-		
-		<!-- Set 정상구현 후 주석처리 
-		<bean id="collectionBean" class="tommy.spring.collection.CollectionBean">
-			<property name="addressList">
-					<set value-type="java.lang.String">
-							<value>서울시 서초구 서초동</value>
-							<value>서울시 동대문구 장안동</value>
-							<value>서울시 동대문구 장안동</value>
-							<value>서울시 동대문구 장안동</value>
-					</set>
-			</property>
-		</bean>  -->
-	  	<!-- 분명 여러개를 저장했는데도 결과는 1개가 나옴 
-	  		Set 컬렉션은 같은데이터를 중복해서 저장하지 않음.
-	  	 -->
-	  	 <!--   lifecycle 실습을위해 주석처리 
-	  	 <context:component-scan base-package="tommy.spring.polymorphism"></context:component-scan>-->
-	  	
-	  	<!-- Apple을 원할시 apple주석 해제, Sony를 원할시Sony 주석 해제 -->	 
-	  	 <!-- <bean class="tommy.spring.polymorphism.AppleSpeaker" />  --> 
-	  	 <!-- <bean id="sonny" class="tommy.spring.polymorphism.SonySpeaker" />   -->
-	  	 
-	  	 <!--  BeanFactory의 라이프 사이클
-	  	 <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" init-method="init">
-		 <property name="greeting"><value>Hello, </value></property></bean>  -->
-		 
-		 <!-- 
-		 <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" init-method="init">
-		 <property name="greeting"><value>Hello, </value></property>
-		 </bean>
-		 <bean class="tommy.spring.lifecycle.CustomBeanPostProcessor" />
-		  -->
-		<!-- <context:component-scan base-package="tommy.spring.web"></context:component-scan>  -->
-		 
-		 <!-- 어노테이션 없이 실행됐으면 주석처리 
-		 <bean id="userService" class="tommy.spring.web.user.impl.UserServiceImpl">
-		 		<property name="userDAO" ref="userDAO" />
-		 </bean>
-		 <bean id="userDAO" class="tommy.spring.web.user.impl.UserDAO"></bean>-->
-	     
-	     <!--  145번 줄에서 LogAdvice -> Log4jAdvice 수정 -->
-	     <!--  150번줄에서 printLog를 printLogging 로 수정 후 결과 나오면 주석
-	     <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-		 <bean id="log" class="tommy.spring.web.common.Log4jAdvice"></bean>
-		 <aop:config>
-			 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/>
-			 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" id="getPointcut"/>
-			 <aop:aspect ref="log">
-			 <aop:after method="printLogging" pointcut-ref="getPointcut"/>
-		 </aop:aspect>
-		 </aop:config> -->
-		 <!--  BeforeAdivce실습 
-		 <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-		 <bean id="log" class="tommy.spring.web.common.Log4jAdvice"></bean> 
-		 <bean id="before" class="tommy.spring.web.common.BeforeAdvice"></bean>
-		 <aop:config>
-			 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/>
-		 getPointcut은 잠시 주석처리
-		 <aop:aspect ref="before">
-		 	 <aop:before method="beforeLog" pointcut-ref="allPointcut"/>
-		 </aop:aspect>
-		 </aop:config>-->
-		 <!-- 
-		 <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-		 <bean id="afterReturning" class="tommy.spring.web.common.AfterReturningAdvice"></bean>
-		 <aop:config>
-		  allPointcut은 잠시 주석처리 
-				 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" id="getPointcut"/> 
-				 <aop:aspect ref="afterReturning">
-		  <aop:after-returning method="afterLog" pointcut-ref="getPointcut"/>
-		  </aop:aspect>
-		  </aop:config> -->
-		  
-		  <!-- After ThrowingAdvice 실습
-		  <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-		  <bean id="afterThrowing" class="tommy.spring.web.common.AfterThrowingAdvice"></bean>
-		  <bean id="after" class="tommy.spring.web.common.AfterAdvice"></bean>
-		  <aop:config>
-		  <aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/>
-		  getPointcut은 잠시 주석처리
-		  <aop:aspect ref="afterThrowing">
-		 		 <aop:after-throwing method="exceptionLog" pointcut-ref="allPointcut"/>
-		  </aop:aspect>
-		  <aop:aspect ref="after">
-		 		 <aop:after method="finallyLog" pointcut-ref="allPointcut"/>
-		  </aop:aspect>
-		  </aop:config> -->
-		  
-		  <!--  around advice실습 
-	      <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-	      <bean id="around" class="tommy.spring.web.common.AroundAdvice"></bean>
-	      <aop:config>
-		  <aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/>
-		   getPointcut 잠시 주석 처리 
-		  <aop:aspect ref="around">
-		  <aop:around method="aroundLog" pointcut-ref="allPointcut"/>
-		  </aop:aspect>
-		  </aop:config>-->
-		  
-		  <!--  BeforeAdvice 실습
-		  <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-	      <bean id="before" class="tommy.spring.web.common.BeforeAdvice"></bean>
-		  <aop:config>
-			 allPointcut 잠시 주석처리 
-		  <aop:pointcut 
-		  expression="execution(* tommy.spring.web..*Impl.get*(..))" id="getPointcut"/>
-		  <aop:aspect ref="before">
-		  <aop:before method="beforeLog" pointcut-ref="getPointcut"/>
-		  </aop:aspect>
-		  </aop:config> -->
-		  
-		  <!--  After Returning Advice 실습 
-	     <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-		 <bean id="afterReturning" class="tommy.spring.web.common.AfterReturningAdvice"></bean> 
-		 <aop:config>
-		 allPointcut 잠시 주석처리 
-		 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" 
-											id="getPointcut"/>
-		 <aop:aspect ref="afterReturning">
-		 <aop:after-returning method="afterLog" pointcut-ref="getPointcut" 
-		 returning="returnObj"/>
-		 </aop:aspect>
-		 </aop:config>-->
-		 
-		 <!--  After ThrowingAdvice 
-		 <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-		 <bean id="afterThrowing" class="tommy.spring.web.common.AfterThrowingAdvice"></bean>
-		 <aop:config>
-		 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/>
-	 	 getPointcut 잠시 주석 처리
-		 <aop:aspect ref="afterThrowing">
-		 <aop:after-throwing method="exceptionLog" pointcut-ref="allPointcut" 
-		 													throwing="e"/>
-		 </aop:aspect>
-		 </aop:config>-->
-		 
-		 <!-- Around Advice 실습 
-		 <context:component-scan base-package="tommy.spring.web"></context:component-scan>
-		 <bean id="around" class="tommy.spring.web.common.AroundAdvice"></bean>
-		 <aop:config>
-		  allPointcut 주석처리 
-		 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" 
-		 id="getPointcut"/>
-		 <aop:aspect ref="around">
-		 <aop:around method="aroundLog" pointcut-ref="getPointcut"/>
-		 </aop:aspect>
-		 </aop:config>-->
-		 
-		 <!--  어노테이션 기반의 AOP 실습 -->
-		 <context:component-scan base-package="tommy.spring.web"></context:component-scan>
- 		 <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
-	  	 <!-- 나머지 모두 주석 처리 -->
-		 
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut
+			expression="execution(* tommy.spring.web..*(..))" id="txPointcut" />
+		<aop:advisor advice-ref="txAdvice"
+			pointcut-ref="txPointcut" />
+	</aop:config>
+
+	<!-- 첫번째 예제 실습후에 주석처리함 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV" 
+		init-method="start" destroy-method="stop"/> -->
+
+	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="singleton"/> -->
+	<!--<bean id="tv" class="tommy.spring.polymorphism.SamsungTV" scope="prototype"/> -->
+
+	<!-- <bean id="lgtv" class="tommy.spring.polymorphism.LgTV" lazy-init="true"/> 
+		승재형 실습 후 삭제 나중가서 나오니까 그냥 알고만 있어라. -->
+
+	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"/> 1번예제(의존성 
+		주입,생성자 인젝션 방법) 실행후 주석 -->
+
+	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"> <constructor-arg 
+		ref="sony"></constructor-arg> </bean> <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 
+		2번예제(의존성 주입 setter 인젝션 방법) 실행 후 주석 -->
+
+	<!-- 아래 예제에서 생정자가 여러개 오버로딩 되어 있다면 <constructor-arg index=0 ref="sony"></constructor-arg> 
+		<constructor-arg index="1" value="3000000"></constructor-arg> 인덱스를 줘서 순서를 
+		정할 수 있으나 코드를 짤때 애초에 순서를 지켜서 작성해라. -->
+
+	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"> <constructor-arg 
+		ref="sony"></constructor-arg> <constructor-arg value="3000000"></constructor-arg> 
+		</bean> <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> 다중 
+		변수 매핑 정상구현 후 주석 -->
+
+	<!-- <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"> <constructor-arg 
+		ref="apple"></constructor-arg> <constructor-arg value="3000000"></constructor-arg> 
+		</bean> <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> <bean 
+		id="apple" class="tommy.spring.polymorphism.AppleSpeaker"/> Speaker 인터페이스 
+		상속 정상 구현 후 주석 -->
+
+	<!-- setter 인젝션 정상 구현후 주석 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV"> 
+		<property name="speaker" ref="apple" /> <property name="price" value="3000000" 
+		/> </bean> <bean id="apple" class="tommy.spring.polymorphism.AppleSpeaker"/> 
+		51번째 줄을 놓쳐서 오류 발생함 -->
+
+	<!-- p네임스페이스 정상 구현 후 주석 <bean id="tv" class="tommy.spring.polymorphism.SamsungTV" 
+		p:speaker-ref="sony" p:price="2800000"/> <bean id="sony" class="tommy.spring.polymorphism.SonySpeaker"/> -->
+
+	<!-- List타입 정상 구현 후 주석 <bean id="collectionBean" class="tommy.spring.collection.CollectionBean"> 
+		<property name="addressList"> <list> <value>서울시 서초구 서초동</value> <value>서울시 
+		동대문구 장안동</value> </list> </property> </bean> -->
+	<!-- map 정상 구현후 주석 <bean id="collectionBean" class="tommy.spring.collection.CollectionBean"> 
+		<property name="addressList"> <map> <entry> <key><value>홍길동</value></key> 
+		<value>율도국</value> </entry> <entry> <key><value>손오공</value></key> <value>화과산</value> 
+		</entry> </map> </property> </bean> ===========================================> -->
+	<!-- property 정상 구현후 주석 <bean id="collectionBean" class="tommy.spring.collection.CollectionBean"> 
+		<property name="addressList"> <props> <prop key="홍길동">율도국</prop> <prop key="손오공">화과산</prop> 
+		</props> </property> </bean> ===========================================> -->
+
+	<!-- Set 정상구현 후 주석처리 <bean id="collectionBean" class="tommy.spring.collection.CollectionBean"> 
+		<property name="addressList"> <set value-type="java.lang.String"> <value>서울시 
+		서초구 서초동</value> <value>서울시 동대문구 장안동</value> <value>서울시 동대문구 장안동</value> <value>서울시 
+		동대문구 장안동</value> </set> </property> </bean> -->
+	<!-- 분명 여러개를 저장했는데도 결과는 1개가 나옴 Set 컬렉션은 같은데이터를 중복해서 저장하지 않음. -->
+	<!-- lifecycle 실습을위해 주석처리 <context:component-scan base-package="tommy.spring.polymorphism"></context:component-scan> -->
+
+	<!-- Apple을 원할시 apple주석 해제, Sony를 원할시Sony 주석 해제 -->
+	<!-- <bean class="tommy.spring.polymorphism.AppleSpeaker" /> -->
+	<!-- <bean id="sonny" class="tommy.spring.polymorphism.SonySpeaker" /> -->
+
+	<!-- BeanFactory의 라이프 사이클 <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" 
+		init-method="init"> <property name="greeting"><value>Hello, </value></property></bean> -->
+
+	<!-- <bean id="myLifeBean" class="tommy.spring.lifecycle.MyLifeBeanImpl" 
+		init-method="init"> <property name="greeting"><value>Hello, </value></property> 
+		</bean> <bean class="tommy.spring.lifecycle.CustomBeanPostProcessor" /> -->
+	<!-- <context:component-scan base-package="tommy.spring.web"></context:component-scan> -->
+
+	<!-- 어노테이션 없이 실행됐으면 주석처리 <bean id="userService" class="tommy.spring.web.user.impl.UserServiceImpl"> 
+		<property name="userDAO" ref="userDAO" /> </bean> <bean id="userDAO" class="tommy.spring.web.user.impl.UserDAO"></bean> -->
+
+	<!-- 145번 줄에서 LogAdvice -> Log4jAdvice 수정 -->
+	<!-- <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="log" class="tommy.spring.web.common.Log4jAdvice"></bean> <aop:config> 
+		<aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/> 
+		<aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" 
+		id="getPointcut"/> <aop:aspect ref="log"> <aop:after method="printLogging" 
+		pointcut-ref="getPointcut"/> </aop:aspect> </aop:config> -->
+	<!-- BeforeAdivce실습 <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="log" class="tommy.spring.web.common.Log4jAdvice"></bean> <bean 
+		id="before" class="tommy.spring.web.common.BeforeAdvice"></bean> <aop:config> 
+		<aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/> 
+		getPointcut은 잠시 주석처리 <aop:aspect ref="before"> <aop:before method="beforeLog" 
+		pointcut-ref="allPointcut"/> </aop:aspect> </aop:config> -->
+	<!-- <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="afterReturning" class="tommy.spring.web.common.AfterReturningAdvice"></bean> 
+		<aop:config> allPointcut은 잠시 주석처리 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" 
+		id="getPointcut"/> <aop:aspect ref="afterReturning"> <aop:after-returning 
+		method="afterLog" pointcut-ref="getPointcut"/> </aop:aspect> </aop:config> -->
+
+	<!-- After ThrowingAdvice 실습 <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="afterThrowing" class="tommy.spring.web.common.AfterThrowingAdvice"></bean> 
+		<bean id="after" class="tommy.spring.web.common.AfterAdvice"></bean> <aop:config> 
+		<aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/> 
+		getPointcut은 잠시 주석처리 <aop:aspect ref="afterThrowing"> <aop:after-throwing 
+		method="exceptionLog" pointcut-ref="allPointcut"/> </aop:aspect> <aop:aspect 
+		ref="after"> <aop:after method="finallyLog" pointcut-ref="allPointcut"/> 
+		</aop:aspect> </aop:config> -->
+
+	<!-- around advice실습 <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="around" class="tommy.spring.web.common.AroundAdvice"></bean> <aop:config> 
+		<aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" id="allPointcut"/> 
+		getPointcut 잠시 주석 처리 <aop:aspect ref="around"> <aop:around method="aroundLog" 
+		pointcut-ref="allPointcut"/> </aop:aspect> </aop:config> -->
+
+	<!-- BeforeAdvice 실습 <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="before" class="tommy.spring.web.common.BeforeAdvice"></bean> <aop:config> 
+		allPointcut 잠시 주석처리 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" 
+		id="getPointcut"/> <aop:aspect ref="before"> <aop:before method="beforeLog" 
+		pointcut-ref="getPointcut"/> </aop:aspect> </aop:config> -->
+
+	<!-- After Returning Advice 실습 <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="afterReturning" class="tommy.spring.web.common.AfterReturningAdvice"></bean> 
+		<aop:config> allPointcut 잠시 주석처리 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" 
+		id="getPointcut"/> <aop:aspect ref="afterReturning"> <aop:after-returning 
+		method="afterLog" pointcut-ref="getPointcut" returning="returnObj"/> </aop:aspect> 
+		</aop:config> -->
+
+	<!-- ﻿After Throwing Advice 실습 <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="afterThrowing" class="tommy.spring.web.common.AfterThrowingAdvice"></bean> 
+		<aop:config> <aop:pointcut expression="execution(* tommy.spring.web..*Impl.*(..))" 
+		id="allPointcut"/> <aop:aspect ref="afterThrowing"> <aop:after-throwing method="exceptionLog" 
+		pointcut-ref="allPointcut" throwing="e"/> </aop:aspect> </aop:config> -->
+
+	<!-- Around Advice 실습 <context:component-scan base-package="tommy.spring.web"></context:component-scan> 
+		<bean id="around" class="tommy.spring.web.common.AroundAdvice"></bean> <aop:config> 
+		allPointcut 주석처리 <aop:pointcut expression="execution(* tommy.spring.web..*Impl.get*(..))" 
+		id="getPointcut"/> <aop:aspect ref="around"> <aop:around method="aroundLog" 
+		pointcut-ref="getPointcut"/> </aop:aspect> </aop:config> -->
+
+	<!-- 어노테이션 기반의 AOP 실습 -->
+
+
+	<!-- 나머지 모두 주석 처리 -->
+
 </beans>
 

@@ -7,7 +7,8 @@ import tommy.spring.web.board.BoardVO;
 @Service("boardService") //비즈니스 로직 처리를 위해 어노테이션 추가 
 public class BoardServiceImpl implements BoardService {
 	@Autowired
-	private BoardDAO boardDAO;
+//	private BoardDAO boardDAO; 기존 예제 주석처리 
+	private BoardDAOSpring boardDAO;
 	public BoardServiceImpl() {
 	
 	}
@@ -17,6 +18,8 @@ public class BoardServiceImpl implements BoardService {
 //				throw new IllegalArgumentException("0번 글은 등록할 수 없습니다.");
 //			}
 			boardDAO.insertBoard(vo);
+			boardDAO.insertBoard(vo); // 1000번 글 등록 성공
+			boardDAO.insertBoard(vo); // Exception 발생 21~22 예제 실행 후 원상복구 주석 처리하기
 	}
 	@Override
 	public void updateBoard(BoardVO vo) {

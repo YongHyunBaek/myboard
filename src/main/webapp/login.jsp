@@ -14,11 +14,13 @@
 		<table border="1">
 			<tr>
 				<td>아이디</td>
-				<td><input type="text" name="id" /></td>
+				<!--  <td><input type="text" name="id" /></td> 18번째줄 EL태그 사용을 위해 주석처리  -->
+				<td><input type="text" name="id" value="${userVO.id}"/></td>
 			</tr>
 			<tr>
 				<td>비밀번호</td>
-				<td><input type="password" name="password" /></td>
+				<!--  <td><input type="password" name="password" /></td> 23번째줄 EL태그 사용을 위해 주석처리-->
+				<td><input type="password" name="password" value="${userVO.password}"/></td>
 			</tr>
 			<tr>
 				<td colspan="2"><input type="submit" value="로그인" /></td>

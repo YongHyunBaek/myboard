@@ -3,6 +3,7 @@
 <%@ page import="tommy.spring.web.board.BoardVO"%>
 <%@ page import="java.util.List"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%
 // 세션에 저장된 글 목록을 추출 
 List<BoardVO> boardList = (List<BoardVO>) session.getAttribute("boardList");
@@ -11,27 +12,28 @@ List<BoardVO> boardList = (List<BoardVO>) session.getAttribute("boardList");
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Board List</title>
+<title><spring:message code="board.list.mainTitle" /></title>
 </head>
 <body>
-	<h1>글 목록</h1>
+	<h1>
+		<spring:message code="board.list.mainTitle" />
+	</h1>
 	<h3>${userName}
-		회원님 환영합니다.<a href="logout.do">Log-Out</a>
+		<spring:message code="board.list.welcomeMsg" />
+		<a href="logout.do">Log-Out</a>
 	</h3>
 	<!-- 검색 시작 -->
 	<form action="getBoardList.do" method="post">
 		<table border="1">
 			<tr>
 				<td><select name="searchCondition">
-						<!--  
-						<option value="TITLE">제목</option>
-						<option value="CONTENT">내용</option>-->
 
 						<c:forEach items="${conditionMap }" var="option">
 							<option value="${option.value }">${option.key }</option>
 						</c:forEach>
 				</select> <input type="text" name="searchKeyword" /> <input type="submit"
-					value="검색" /></td>
+					value="value="
+					<spring:message code="board.list.search.condition.btn" /> /></td>
 			</tr>
 		</table>
 	</form>
@@ -39,11 +41,11 @@ List<BoardVO> boardList = (List<BoardVO>) session.getAttribute("boardList");
 	<!-- 검색 종료 -->
 	<table border="1">
 		<tr>
-			<th>번호</th>
-			<th>제목</th>
-			<th>작성자</th>
-			<th>등록일</th>
-			<th>조회수</th>
+			<th><spring:message code="board.list.table.head.seq" /></th>
+			<th><spring:message code="board.list.table.head.title" /></th>
+			<th><spring:message code="board.list.table.head.writer" /></th>
+			<th><spring:message code="board.list.table.head.regDate" /></th>
+			<th><spring:message code="board.list.table.head.cnt" /></th>
 		</tr>
 		<c:forEach var="board" items="${boardList }">
 			<tr>
@@ -56,6 +58,6 @@ List<BoardVO> boardList = (List<BoardVO>) session.getAttribute("boardList");
 		</c:forEach>
 	</table>
 	<br />
-	<a href="insertBoard.jsp">새글 작성</a>
+	<a href="insertBoard.jsp"><spring:message code="board.list.link.insertBoard" /></a>
 </body>
 </html>

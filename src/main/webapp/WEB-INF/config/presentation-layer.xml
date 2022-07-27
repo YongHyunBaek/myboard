@@ -16,10 +16,10 @@
 	<!-- <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"> 
 		<property name="mappings"> <props> <prop key="/insertBoard.do">insertBoard</prop> 
 		</props> </property> </bean> <bean id="insertBoard" class="tommy.spring.web.board.InsertBoardController"></bean> -->
-	<mvc:annotation-driven></mvc:annotation-driven>
-	<context:component-scan
-		base-package="tommy.spring.web">
+	
+	<context:component-scan	base-package="tommy.spring.web">
 	</context:component-scan>
+	<mvc:annotation-driven></mvc:annotation-driven>
 	
 	<!-- 파일 업로드 설정 -->
 	<bean id="multipartResolver"

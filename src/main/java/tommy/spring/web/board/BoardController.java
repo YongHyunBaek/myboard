@@ -1,19 +1,43 @@
 package tommy.spring.web.board;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @SessionAttributes("board")
 public class BoardController {
+	@RequestMapping("/dataTransformXML.do")
+	@ResponseBody
+	public BoardListVO dataTransformXML(BoardVO vo) {
+		vo.setSearchCondition("TITLE");
+		vo.setSearchKeyword("");
+		List<BoardVO> boardList = boardService.getBoardList(vo);
+		BoardListVO boardListVO = new BoardListVO();
+		boardListVO.setBoardList(boardList);
+		return boardListVO;
+	}
+	
+	@RequestMapping("/dataTransformJSON.do")
+	@ResponseBody
+	public BoardListVO dataTransformJSON(BoardVO vo) {
+		vo.setSearchCondition("TITLE");
+		vo.setSearchKeyword("");
+		List<BoardVO> boardList = boardService.getBoardList(vo);
+		BoardListVO boardListVO = new BoardListVO();
+		boardListVO.setBoardList(boardList);
+		return boardListVO;
+	}
 
 	@Autowired
 	private BoardService boardService;
@@ -30,7 +54,7 @@ public class BoardController {
 	public String insertBoard(BoardVO vo) throws IOException {
 		System.out.println("글 등록 처리");
 		MultipartFile uploadFile = vo.getUploadFile();
-		if(!uploadFile.isEmpty()) {
+		if (!uploadFile.isEmpty()) {
 			String fileName = uploadFile.getOriginalFilename();
 			uploadFile.transferTo(new File("C:/myProject/" + fileName));
 		}

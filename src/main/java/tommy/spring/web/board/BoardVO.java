@@ -1,28 +1,42 @@
 package tommy.spring.web.board;
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
+//import javax.xml.bind.annotation.XmlAccessType;
+//import javax.xml.bind.annotation.XmlAccessorType;
+//import javax.xml.bind.annotation.XmlAttribute;
+//import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-@XmlAccessorType(XmlAccessType.FIELD)
+//@XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Table(name = "MYBOARD")
 public class BoardVO {
-	@XmlAttribute
+//	@XmlAttribute
+	@Id
+	@GeneratedValue
 	private int seq;
 	private String title;
 	private String writer;
 	private String content;
-	private Date regDate;
+	@Temporal(TemporalType.DATE)
+	private Date regDate = new Date();
 	private int cnt;
-	@XmlTransient
+//	@XmlTransient
+	@Transient
 	private String searchCondition;
-	@XmlTransient
+//	@XmlTransient
+	@Transient
 	private String searchKeyword;
-	@XmlTransient
+//	@XmlTransient
+	@Transient
 	private MultipartFile uploadFile;
 	
 	@JsonIgnore

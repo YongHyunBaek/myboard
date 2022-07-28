@@ -31,9 +31,8 @@ List<BoardVO> boardList = (List<BoardVO>) session.getAttribute("boardList");
 						<c:forEach items="${conditionMap }" var="option">
 							<option value="${option.value }">${option.key }</option>
 						</c:forEach>
-				</select> <input type="text" name="searchKeyword" /> <input type="submit"
-					value="value="
-					<spring:message code="board.list.search.condition.btn" /> /></td>
+				</select> <input type="text" name="searchKeyword" />
+				<input type="submit" value="<spring:message code="board.list.search.condition.btn" />" /></td>
 			</tr>
 		</table>
 	</form>
